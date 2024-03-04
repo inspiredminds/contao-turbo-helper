@@ -29,7 +29,8 @@ class SetFormResponseStatusCodeListener
     #[AsHook('validateFormField')]
     public function onValidateFormField(Widget $widget): Widget
     {
-        // Check if a form widget has an error and then set a request attribute to force a different response status code.
+        // Check if a form widget has an error and then sets a request attribute to force
+        // a different response status code.
         if ($widget->hasErrors() && ($request = $this->requestStack->getMainRequest())) {
             $request->attributes->set('_set_status', Response::HTTP_UNPROCESSABLE_ENTITY);
         }

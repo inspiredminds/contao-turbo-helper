@@ -1,1 +1,1 @@
-<turbo-frame<?= $this->cssID ?>>
+<turbo-frame<?= $this->cssID ?><?php if ($this->turboFrameTarget): ?> target="<?= $this->turboFrameTarget ?>"<?php endif; ?><?php if ($this->turboFrameAction): ?> data-turbo-action="<?= $this->turboFrameAction ?>"<?php endif; ?>>
