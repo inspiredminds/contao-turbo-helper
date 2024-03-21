@@ -26,24 +26,23 @@ class SetFormResponseStatusCodeListener
     {
     }
 
-    #[AsHook('validateFormField')]
-    public function onValidateFormField(Widget $widget): Widget
+    #[AsHook('parseWidget')]
+    public function onValidateFormField(string $buffer, Widget $widget): string
     {
-        // Check if a form widget has an error and then sets a request attribute to force
-        // a different response status code.
+        // Check if a widget has an error to force a different response status code.
         if ($widget->hasErrors() && ($request = $this->requestStack->getMainRequest())) {
-            $request->attributes->set('_set_status', Response::HTTP_UNPROCESSABLE_ENTITY);
+            $request->attributes->set('_has_widget_error', true);
         }
 
-        return $widget;
+        return $buffer;
     }
 
     #[AsEventListener]
     public function onResponse(ResponseEvent $event): void
     {
-        // Set the response status code, if one was set in the request attributes.
-        if ($event->isMainRequest() && $event->getRequest()->attributes->has('_set_status')) {
-            $event->getResponse()->setStatusCode($event->getRequest()->attributes->get('_set_status'));
+        // Set the response status code to 422 if there was a widget with an error.
+        if ($event->isMainRequest() && $event->getResponse()->isSuccessful() && $event->getRequest()->attributes->has('_has_widget_error')) {
+            $event->getResponse()->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 }
