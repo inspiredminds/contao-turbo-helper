@@ -20,7 +20,7 @@ You can also create streams within your legacy Contao PHP templates:
   <turbo-stream action="append" target="mod-newslist-articles-<?= $this->id ?>">
     <template><?= implode('', $this->articles) ?></template>
   </turbo-stream>
-  <turbo-stream action="replace" target="mod-newslist-pagination-<?= $this->id ?>">
+  <turbo-stream action="update" target="mod-newslist-pagination-<?= $this->id ?>">
     <template><?= $this->pagination ?></template>
   </turbo-stream>
 <?php $this->endTurboStream(); ?>
