@@ -18,7 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 /**
- * Sets the response status code to 422 Unprocessable Entity if there was a validation error in a Contao form.
+ * Sets the response status code to 422 Unprocessable Entity if there was a
+ * validation error in a Contao form.
  */
 class SetFormResponseStatusCodeListener
 {

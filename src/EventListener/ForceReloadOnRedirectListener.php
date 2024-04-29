@@ -15,12 +15,14 @@ use Contao\CoreBundle\Exception\ResponseException;
 use Contao\Form;
 use Contao\PageModel;
 use Contao\StringUtil;
+use InspiredMinds\ContaoTurboHelper\ContaoTurboHelperBundle;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Forces a load of a Contao form's target URL in case the target URL is outside the current domain somewhere down the line.
- * Otherwise it would be a CORS violation with Turbo.
+ * Forces a load of a Contao form's target URL in case the target URL is outside
+ * the current domain somewhere down the line. Otherwise it would be a CORS
+ * violation with Turbo.
  */
 class ForceReloadOnRedirectListener
 {
@@ -44,7 +46,7 @@ class ForceReloadOnRedirectListener
             return;
         }
 
-        if (!\in_array('text/vnd.turbo-stream.html', $request->getAcceptableContentTypes(), true)) {
+        if (!\in_array(ContaoTurboHelperBundle::STREAM_MEDIA_TYPE, $request->getAcceptableContentTypes(), true)) {
             return;
         }
 
@@ -57,7 +59,7 @@ class ForceReloadOnRedirectListener
         $response = new Response(
             '<turbo-stream action="append" target="'.$id.'"><template><script>window.location = \''.$jumpTo->getAbsoluteUrl()."';</script></template></turbo-stream>",
             Response::HTTP_OK,
-            ['content-type' => 'text/vnd.turbo-stream.html'],
+            ['content-type' => ContaoTurboHelperBundle::STREAM_MEDIA_TYPE],
         );
 
         throw new ResponseException($response);
