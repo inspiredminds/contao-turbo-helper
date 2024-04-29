@@ -44,14 +44,21 @@ class CaptureTurboStreamsListener implements ResetInterface
     #[AsEventListener]
     public function onResponse(ResponseEvent $event): void
     {
-        if (!$this->isTurboStream($event->getRequest()) || !$this->streams) {
+        // Ignore if no streams were recorded
+        if (!$this->streams) {
             return;
         }
 
         $response = $event->getResponse();
-        $response->setContent(implode('', $this->streams));
 
-        $response->headers->set('Content-Type', ContaoTurboHelperBundle::STREAM_MEDIA_TYPE);
+        // We need to vary on 'Accept' as the response will differ depending on whether this was a stream request or not.
+        $response->setVary(array_unique(array_merge($response->getVary(), ['Accept'])));
+
+        // If this is a stream request override the response content with the recorded streams.
+        if ($this->isTurboStream($event->getRequest())) {
+            $response->setContent(implode('', $this->streams));
+            $response->headers->set('Content-Type', ContaoTurboHelperBundle::STREAM_MEDIA_TYPE);
+        }
     }
 
     private function isTurboStream(Request|null $request = null): bool
