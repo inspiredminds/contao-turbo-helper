@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Contao Turbo Helper extension.
+ *
+ * (c) INSPIRED MINDS
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace InspiredMinds\ContaoTurboHelper\EventListener;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
@@ -52,7 +60,7 @@ class CaptureTurboStreamsListener implements ResetInterface
         $response = $event->getResponse();
 
         // We need to vary on 'Accept' as the response will differ depending on whether this was a stream request or not.
-        $response->setVary(array_unique(array_merge($response->getVary(), ['Accept'])));
+        $response->setVary(array_unique([...$response->getVary(), 'Accept']));
 
         // If this is a stream request override the response content with the recorded streams.
         if ($this->isTurboStream($event->getRequest())) {
