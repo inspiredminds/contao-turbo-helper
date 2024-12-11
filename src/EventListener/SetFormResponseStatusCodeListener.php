@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace InspiredMinds\ContaoTurboHelper\EventListener;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Contao\Form;
 use Contao\Widget;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -36,6 +37,14 @@ class SetFormResponseStatusCodeListener
         }
 
         return $buffer;
+    }
+
+    #[AsHook('processFormData', priority: -10000)]
+    public function onProcessFormData(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
+    {
+        if (method_exists($form, 'hasErrors') && $form->hasErrors() && ($request = $this->requestStack->getMainRequest())) {
+            $request->attributes->set('_set_status', true);
+        }
     }
 
     #[AsEventListener]
