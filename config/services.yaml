@@ -5,3 +5,4 @@ services:
 
     InspiredMinds\ContaoTurboHelper\:
         resource: ../src
+        exclude: ../src/{ContaoManager,DependencyInjection,ContaoTurboHelperBundle.php}
