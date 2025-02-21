@@ -41,7 +41,7 @@ class ForceReloadOnRedirectListener
         return $fields;
     }
 
-    #[AsHook('processFormData')]
+    #[AsHook('processFormData', priority: -1000)]
     public function onProcessFormData(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
     {
         if (!($request = $this->requestStack->getCurrentRequest())) {
