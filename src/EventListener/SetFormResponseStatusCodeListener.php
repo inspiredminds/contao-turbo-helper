@@ -60,16 +60,10 @@ class SetFormResponseStatusCodeListener
             return;
         }
 
-        $request = $event->getRequest();
-
-        if (!\in_array('text/vnd.turbo-stream.html', $request->getAcceptableContentTypes(), true)) {
-            return;
-        }
-
         $response = $event->getResponse();
 
         // Set the response status code to 422 if there was a form error.
-        if (Response::HTTP_OK === $response->getStatusCode() && $request->attributes->has('_contao_widget_error')) {
+        if (Response::HTTP_OK === $response->getStatusCode() && $event->getRequest()->attributes->has('_contao_widget_error')) {
             $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
