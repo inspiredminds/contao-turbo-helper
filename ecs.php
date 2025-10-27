@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+/*
+ * (c) INSPIRED MINDS
+ */
+
 use Contao\EasyCodingStandard\Fixer\CommentLengthFixer;
 use Contao\EasyCodingStandard\Set\SetList;
 use PhpCsFixer\Fixer\Comment\HeaderCommentFixer;
@@ -12,9 +16,11 @@ return ECSConfig::configure()
     ->withPaths([
         __DIR__.'/src',
         __DIR__.'/contao',
+        __DIR__.'/ecs.php',
+        __DIR__.'/rector.php',
     ])
     ->withConfiguredRule(HeaderCommentFixer::class, [
-        'header' => "This file is part of the Contao Turbo Helper extension.\n\n(c) INSPIRED MINDS\n\n@license LGPL-3.0-or-later",
+        'header' => '(c) INSPIRED MINDS',
     ])
     ->withSkip([CommentLengthFixer::class])
     ->withParallel()

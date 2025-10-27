@@ -3,11 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Contao Turbo Helper extension.
- *
  * (c) INSPIRED MINDS
- *
- * @license LGPL-3.0-or-later
  */
 
 namespace InspiredMinds\ContaoTurboHelper\EventListener;
@@ -25,7 +21,9 @@ class CaptureTurboStreamsListener implements ResetInterface
 {
     public function __construct(
         private readonly RequestStack $requestStack,
-        /** @var list<string> */
+        /**
+         * @var list<string>
+         */
         private array $streams = [],
     ) {
     }
