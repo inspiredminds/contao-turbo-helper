@@ -57,7 +57,7 @@ class CaptureTurboStreamsListener implements ResetInterface
         $response = $event->getResponse();
 
         // We need to vary on 'Accept' as the response might differ depending on whether this was a stream request or not.
-        $response->setVary(array_unique([...$response->getVary(), 'Accept']));
+        $response->setVary('Accept', false);
 
         // If this is a stream request override the response content with the recorded streams.
         if ($this->streams && $this->isTurboStream($event->getRequest())) {
