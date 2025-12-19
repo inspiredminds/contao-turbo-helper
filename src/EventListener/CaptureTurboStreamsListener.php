@@ -36,7 +36,7 @@ class CaptureTurboStreamsListener implements ResetInterface
     #[AsHook('parseTemplate')]
     public function onParseTemplate(Template $template): void
     {
-        $template->isTurboStream = fn (): bool => $this->isTurboStream();
+        $template->isTurboStream = Template::once(fn (): bool => $this->isTurboStream());
 
         $template->startTurboStream = static function (): void {
             ob_start();
@@ -50,18 +50,17 @@ class CaptureTurboStreamsListener implements ResetInterface
     #[AsEventListener]
     public function onResponse(ResponseEvent $event): void
     {
-        // Ignore if no streams were recorded
-        if (!$this->streams) {
+        if (!$event->isMainRequest()) {
             return;
         }
 
         $response = $event->getResponse();
 
-        // We need to vary on 'Accept' as the response will differ depending on whether this was a stream request or not.
+        // We need to vary on 'Accept' as the response might differ depending on whether this was a stream request or not.
         $response->setVary(array_unique([...$response->getVary(), 'Accept']));
 
         // If this is a stream request override the response content with the recorded streams.
-        if ($this->isTurboStream($event->getRequest())) {
+        if ($this->streams && $this->isTurboStream($event->getRequest())) {
             $response->setContent(implode('', $this->streams));
             $response->headers->set('Content-Type', ContaoTurboHelperBundle::STREAM_MEDIA_TYPE);
         }
@@ -69,7 +68,7 @@ class CaptureTurboStreamsListener implements ResetInterface
 
     private function isTurboStream(Request|null $request = null): bool
     {
-        if (!($request ??= $this->requestStack->getCurrentRequest())) {
+        if (!($request ??= $this->requestStack->getMainRequest())) {
             return false;
         }
 
